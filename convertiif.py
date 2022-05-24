@@ -42,16 +42,9 @@ def main(input_file_name):
         reader = csv.reader(our_file)
 
 
-    # product_file = os.path.join(PROJECT_ROOT, 'products.csv')
-
-
-    #input_file = open(os.path.join(PROJECT_ROOT, input_file_name), 'r')
-
-    #for trans in input_file:
-    #    trans = trans.strip()
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print("usage: python convertiif.py input.csv")
+        print("usage: python3 convertiif.py <yourinput.csv>")
 
     main(sys.argv[1])
