@@ -28,6 +28,7 @@ def main() -> None:
     prev_cust = ""
     product = ""
     tmp_product = ""
+    trans_amount = 0
     inv_amount = 0
     check_date = ""
 
@@ -87,8 +88,9 @@ def main() -> None:
                     error(tmp_product)
                     exit(1)
 
-                inv_trans.append([customer, product, current_trans[2]])
                 inv_amount += float(current_trans[2])
+                trans_amount = float(current_trans[2])
+                inv_trans.append([customer, product, tmp_product, trans_amount])
                 continue
             
             if tmp_cust != "" and prev_cust == tmp_cust:
@@ -99,14 +101,15 @@ def main() -> None:
                     error(tmp_product)
                     exit(1)
 
-                inv_trans.append([customer, product, current_trans[2]])
                 inv_amount += float(current_trans[2])
+                trans_amount = float(current_trans[2])
+                inv_trans.append([customer, product, tmp_product, trans_amount])
                 continue
 
             if tmp_cust != "" and prev_cust != "" and tmp_cust != prev_cust:
                 inv_file.write(template1 %(check_date, customer, inv_amount, invnum, check_date))
                 for tmp_trans in inv_trans:
-                    inv_file.write(template2 %(check_date,tmp_trans[1], tmp_trans[2],tmp_trans[1], tmp_trans[2])) 
+                    inv_file.write(template2 %(check_date,tmp_trans[1], tmp_trans[3],tmp_trans[2], tmp_trans[3])) 
                 inv_file.write(trans_end)
                 invnum += 1
                 inv_trans.clear()
@@ -125,8 +128,10 @@ def main() -> None:
                     error(tmp_product)
                     exit(1)
 
-                inv_trans.append([customer, product, current_trans[2]])
                 inv_amount += float(current_trans[2])
+                trans_amount = float(current_trans[2])
+                inv_trans.append([customer, product, tmp_product, trans_amount])
+
                 continue
 
     inv_file.close()
