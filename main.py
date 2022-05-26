@@ -59,6 +59,9 @@ def main() -> None:
         transactions = list(csv.reader(our_file))
         our_file.close()
 
+    inv_file = open(invoice_dir + 'inv' + str(invnum) + '.iif', mode = 'w')
+    inv_file.write(head)
+
     for row in range(len(transactions)):
         if row == 0:
             tmp_trans = transactions[row]
@@ -101,13 +104,10 @@ def main() -> None:
                 continue
 
             if tmp_cust != "" and prev_cust != "" and tmp_cust != prev_cust:
-                inv_file = open(invoice_dir + 'inv' + str(invnum) + '.iif', mode = 'w')
-                inv_file.write(head)
                 inv_file.write(template1 %(check_date, customer, inv_amount, invnum, check_date))
                 for tmp_trans in inv_trans:
                     inv_file.write(template2 %(check_date,tmp_trans[1], tmp_trans[2],tmp_trans[1], tmp_trans[2])) 
                 inv_file.write(trans_end)
-                inv_file.close()
                 invnum += 1
                 inv_trans.clear()
                 inv_amount = 0
@@ -127,7 +127,9 @@ def main() -> None:
 
                 inv_trans.append([customer, product, current_trans[2]])
                 inv_amount += float(current_trans[2])
-                continue        
+                continue
+
+    inv_file.close()
 
 if __name__ == "__main__":
     main()
