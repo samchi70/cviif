@@ -1,6 +1,4 @@
 # Script to convert csv to IIF output.
-
-from operator import inv
 import os
 import sys, traceback, re
 import csv
@@ -11,7 +9,12 @@ def error(trans):
     sys.stderr.write("%s\n" % trans)
     traceback.print_exc(None, sys.stderr)
 
-def main() -> None:
+def main():
+    if len(sys.argv) <3:
+        print("You need a transactions file and an invoice number")
+        print("ex:python3 invoicescvt.py check#.csv 123")
+        exit()
+
     input_file_name = sys.argv[1]
     invnum = int(sys.argv[2])
     cust_file = os.path.join(PROJECT_ROOT, 'custs.csv')
@@ -59,7 +62,7 @@ def main() -> None:
     with open(os.path.join(PROJECT_ROOT, input_file_name), mode='r') as our_file:
         transactions = list(csv.reader(our_file))
         our_file.close()
-
+    
     inv_file = open(invoice_dir + 'inv' + str(invnum) + '.iif', mode = 'w')
     inv_file.write(head)
 
@@ -70,7 +73,7 @@ def main() -> None:
             tmp_trans.clear()
             continue
         
-        if row > 1:            
+        if row > 0:            
             current_trans = transactions[row]
             tmp_cust = current_trans[0]
 
@@ -131,10 +134,8 @@ def main() -> None:
                 inv_amount += float(current_trans[2])
                 trans_amount = float(current_trans[2])
                 inv_trans.append([customer, product, tmp_product, trans_amount])
-
                 continue
-
+       
     inv_file.close()
 
-if __name__ == "__main__":
-    main()
+main()
