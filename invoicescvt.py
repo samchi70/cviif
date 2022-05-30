@@ -66,14 +66,14 @@ def main():
     inv_file = open(invoice_dir + 'inv' + str(invnum) + '.iif', mode = 'w')
     inv_file.write(head)
 
-    for row in range(len(transactions)):
+    row = 0
+    while row < len(transactions):
         if row == 0:
             tmp_trans = transactions[row]
             check_date = tmp_trans[1]
             tmp_trans.clear()
-            continue
         
-        if row > 0:            
+        if row > 1:            
             current_trans = transactions[row]
             tmp_cust = current_trans[0]
 
@@ -94,7 +94,6 @@ def main():
                 inv_amount += float(current_trans[2])
                 trans_amount = float(current_trans[2])
                 inv_trans.append([customer, product, tmp_product, trans_amount])
-                continue
             
             if tmp_cust != "" and prev_cust == tmp_cust:
                 tmp_product = current_trans[1]
@@ -107,7 +106,6 @@ def main():
                 inv_amount += float(current_trans[2])
                 trans_amount = float(current_trans[2])
                 inv_trans.append([customer, product, tmp_product, trans_amount])
-                continue
 
             if tmp_cust != "" and prev_cust != "" and tmp_cust != prev_cust:
                 inv_file.write(template1 %(check_date, customer, inv_amount, invnum, check_date))
@@ -134,8 +132,14 @@ def main():
                 inv_amount += float(current_trans[2])
                 trans_amount = float(current_trans[2])
                 inv_trans.append([customer, product, tmp_product, trans_amount])
-                continue
-       
+
+        row = row + 1
+
+    inv_file.write(template1 %(check_date, customer, inv_amount, invnum, check_date))
+    for tmp_trans in inv_trans:
+        inv_file.write(template2 %(check_date,tmp_trans[1], tmp_trans[3],tmp_trans[2], tmp_trans[3])) 
+    inv_file.write(trans_end)
     inv_file.close()
+
 
 main()
