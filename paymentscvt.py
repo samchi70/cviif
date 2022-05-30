@@ -1,3 +1,4 @@
+
 # Script to convert csv to IIF output.
 import os
 import sys, traceback, re
@@ -58,48 +59,47 @@ def main():
     pay_file = open(invoice_dir + 'pay' + str(check_num) + '.iif', mode = 'w')
     pay_file.write(head)
 
-    for row in range(0, len(transactions)):
-        print(row)
-        if row == 0:
-            continue
-        
-        if row == 1:
-            continue
+    row = 0
+    while row < len(transactions):
 
         if row > 1:            
             current_trans = transactions[row]
             tmp_cust = current_trans[0]
 
-            if tmp_cust != "" and prev_cust =="":
+            if prev_cust =="":
                 prev_cust = tmp_cust
                 customer = customers.get(tmp_cust, "")
-                
+
                 if customer == "":
                     error(tmp_cust)
                     exit(1)
 
-                inv_amount += float(current_trans[2])
-            
-            if tmp_cust != "" and prev_cust == tmp_cust:
-                inv_amount += float(current_trans[2])
+                inv_amount += float(current_trans[2].strip())
 
-            if tmp_cust != "" and prev_cust != "" and tmp_cust != prev_cust:
+            elif tmp_cust == prev_cust:
+                inv_amount += float(current_trans[2].strip())
+
+            elif prev_cust != tmp_cust:
                 pay_file.write(template1 %(check_date, customer, inv_amount, invnum))
                 pay_file.write(template2 %(check_date, customer, inv_amount, invnum))
                 pay_file.write(trans_end)
+
                 invnum += 1
                 inv_amount = 0
-
                 prev_cust = tmp_cust
                 customer = customers.get(tmp_cust, "")
-                
+
                 if customer == "":
                     error(tmp_cust)
                     exit(1)
 
-                inv_amount += float(current_trans[2])
+                inv_amount += float(current_trans[2].strip())
 
-    print(len(transactions))
+        row = row + 1
+
+    pay_file.write(template1 %(check_date, customer, inv_amount, invnum))
+    pay_file.write(template2 %(check_date, customer, inv_amount, invnum))
+    pay_file.write(trans_end)
     pay_file.close()
 
 main()
